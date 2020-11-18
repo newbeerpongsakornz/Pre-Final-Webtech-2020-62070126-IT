@@ -14,7 +14,7 @@
     <form action="search.php">
         <h3>ระบุคำค้นหา</h3>
         <input id="songName" name="songName" type="text" width="80%">
-        <button type="submit">ค้นหา</button>
+        <button type="submit" class="btn btn-primary">ค้นหา</button>
     </form>
 
     <?php
@@ -23,12 +23,15 @@
     $res = file_get_contents($url);
     $data = json_decode($res);
 
+    $haveSong = false;
+
     echo "<div>";
     for ($i = 0; $i < sizeof($data->tracks->items); $i++) {
 
         $song = $data->tracks->items[$i]->album;
         $search = strtolower($_GET["songName"]);
         if (strpos(strtolower($song->artists[0]->name), $search) !== false || strpos(strtolower($song->name), $search) !== false) {
+            $haveSong = true;
             echo "<div class='myCard'>";
             echo "<img src='" . $song->images[0]->url . "' width='100%'>";
             echo "<div>";
@@ -42,6 +45,11 @@
             echo "</div>";
             echo "</div>";
         }
+    }
+
+    if (!$haveSong)
+    {
+        echo "<h1>Not Found</h1>";
     }
     echo "</div>";
 
